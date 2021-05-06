@@ -72,9 +72,9 @@ export default function MyAwesomeCalendar({
 
   const handleMonth = (mode = 'asc') => {
     if (mode === 'asc') {
-      setSelectedMonth(moment(selectedMonth).add(1, 'M'));
+      setSelectedMonth(moment(selectedMonth).add(1, 'months'));
     } else {
-      setSelectedMonth(moment(selectedMonth).subtract(1, 'M'));
+      setSelectedMonth(moment(selectedMonth).subtract(1, 'months'));
     }
   };
 
@@ -188,9 +188,14 @@ export default function MyAwesomeCalendar({
 
   const handleDays = () => {
     let days = [];
-    const firstDay = parseInt(selectedMonth.startOf('month').format('d'));
+    let firstDay = parseInt(selectedMonth.startOf('month').format('d'));
     if (firstDay) {
-      days = [...Array(firstDay - 1).keys()].map(d => ' '.repeat(d + 1));
+      const last_month = selectedMonth.subtract(1, 'months').daysInMonth();
+
+      days = [...Array(firstDay - 1).keys()].map(d => {
+        firstDay = firstDay - 1;
+        return last_month - firstDay;
+      });
     }
     return [
       ...days,
