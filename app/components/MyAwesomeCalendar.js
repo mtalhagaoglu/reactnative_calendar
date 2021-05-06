@@ -25,7 +25,8 @@ export default function MyAwesomeCalendar({
   const [selectedDate, setSelectedDate] = useState(null);
 
   const Day = ({item}) => {
-    const date = `${item}/${selectedMonth.format('MM')}/${selectedMonth.format(
+    const {type, value} = item;
+    const date = `${value}/${selectedMonth.format('MM')}/${selectedMonth.format(
       'YYYY',
     )}`;
     let color;
@@ -54,27 +55,32 @@ export default function MyAwesomeCalendar({
     }
     return (
       <Pressable
+        disabled={type === 'last'}
         onPress={() => {
-          if (parseInt(item)) {
-            //alert(date);
-            setSelectedDate(date);
-          }
+          setSelectedDate(date);
         }}
         style={[
           styles.dayContainer,
           {backgroundColor: color},
           color && styles.selectedDay,
         ]}>
-        <Text style={[styles.dayText, color && {color: 'white'}]}>{item}</Text>
+        <Text
+          style={[
+            styles.dayText,
+            color && {color: 'white'},
+            type === 'last' && {color: 'gray'},
+          ]}>
+          {value}
+        </Text>
       </Pressable>
     );
   };
 
   const handleMonth = (mode = 'asc') => {
     if (mode === 'asc') {
-      setSelectedMonth(moment(selectedMonth).add(1, 'months'));
+      setSelectedMonth(moment(selectedMonth).add(1, 'M'));
     } else {
-      setSelectedMonth(moment(selectedMonth).subtract(1, 'months'));
+      setSelectedMonth(moment(selectedMonth).subtract(1, 'M'));
     }
   };
 
@@ -188,18 +194,21 @@ export default function MyAwesomeCalendar({
 
   const handleDays = () => {
     let days = [];
-    let firstDay = parseInt(selectedMonth.startOf('month').format('d'));
+    const firstDay = parseInt(selectedMonth.startOf('month').format('d'));
     if (firstDay) {
-      const last_month = selectedMonth.subtract(1, 'months').daysInMonth();
-
+      const last_month_day = moment(selectedMonth)
+        .subtract(1, 'months')
+        .daysInMonth();
       days = [...Array(firstDay - 1).keys()].map(d => {
-        firstDay = firstDay - 1;
-        return last_month - firstDay;
+        return {type: 'last', value: last_month_day - (firstDay - 2 - d)}; // -1 for index, -1 for first day of the week
       });
     }
     return [
       ...days,
-      ...[...Array(selectedMonth.daysInMonth()).keys()].map(d => d + 1),
+      ...[...Array(selectedMonth.daysInMonth()).keys()].map(d => ({
+        type: 'this',
+        value: d + 1,
+      })),
     ];
   };
 

@@ -1,12 +1,5 @@
 import React from 'react';
-import {
-  View,
-  Pressable,
-  Text,
-  StyleSheet,
-  FlatList,
-  Dimensions,
-} from 'react-native';
+import {Pressable, Text, StyleSheet} from 'react-native';
 
 export default function ShowDate({title, date, onPress, isSelected}) {
   return (
