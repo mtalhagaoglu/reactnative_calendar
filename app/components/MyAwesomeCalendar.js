@@ -31,7 +31,7 @@ export default function MyAwesomeCalendar({
     )}`;
     let color;
     let isBetween;
-    if (checkIn && checkOut) {
+    if (checkIn && checkOut && type !== 'last') {
       const compareDate = moment(date, 'DD/MM/YYYY');
       const startDate = moment(checkIn, 'DD/MM/YYYY');
       const endDate = moment(checkOut, 'DD/MM/YYYY');
@@ -42,7 +42,9 @@ export default function MyAwesomeCalendar({
     }
     switch (date) {
       case selectedDate:
-        color = '#D23B38';
+        if (type != 'last') {
+          color = '#D23B38';
+        }
         break;
       case checkOut:
         color = '#60C0D2';
